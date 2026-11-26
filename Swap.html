@@ -327,6 +327,47 @@
   .pill.abierto{background:#fbeecb; color:#a67a17;}
   .pill.cerrado{background:#dcecd0; color:#5c7a41;}
   .admin-empty{text-align:center; color:var(--ink-soft); font-size:12.5px; padding:14px 0;}
+
+  /* ---------- cerrar sesión ---------- */
+  .logout-btn{display:flex; align-items:center; gap:6px; flex:none; background:#fff; border:2px solid var(--line); border-radius:20px; padding:7px 12px; cursor:pointer; font-family:inherit; font-weight:800; font-size:12px; color:var(--purple-dk);}
+  .logout-btn:hover{border-color:var(--purple);}
+  .logout-btn svg{width:15px; height:15px;}
+
+  /* ---------- fotos, cámara e historial ---------- */
+  .btn:disabled{opacity:.45; cursor:not-allowed; box-shadow:none;}
+  div.upload-box{cursor:pointer;}
+  .upload-box .muted{margin:4px 0 0;}
+  .btn-gallery{margin-bottom:16px;}
+  .thumbs{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px;}
+  .thumb-wrap{position:relative;}
+  .thumb{width:68px; height:68px; object-fit:cover; border-radius:12px; border:2px solid var(--line); display:block; cursor:pointer;}
+  .thumb-remove{position:absolute; top:-6px; right:-6px; width:22px; height:22px; border-radius:50%; border:none; background:var(--pink-dk); color:#fff; font-weight:800; font-size:12px; cursor:pointer; padding:0;}
+  .choice-card.sel{border-color:var(--purple); background:#f4ecf8;}
+  .history-card h4{margin:0 0 2px; font-size:13.5px;}
+  .history-card .thumbs{margin:8px 0 0;}
+  .event-photos{flex-basis:100%;}
+  .event-photos .thumbs{margin:6px 0 0 22px;}
+  .event-photos .thumb{width:46px; height:46px;}
+  .event-row{flex-wrap:wrap;}
+  .camera{position:absolute; inset:0; z-index:150; background:#1d1722; display:none; flex-direction:column; padding:34px 16px 18px; gap:12px; color:#fff;}
+  .camera.open{display:flex;}
+  .camera-head{display:flex; justify-content:space-between; align-items:center; font-weight:800; font-size:14px;}
+  .camera-view{flex:1; min-height:0; border-radius:18px; overflow:hidden; background:#000; display:flex; align-items:center; justify-content:center;}
+  .camera-view video{width:100%; height:100%; object-fit:cover;}
+  .camera-error{display:none; padding:20px; text-align:center;}
+  .camera-error p{color:#fff;}
+  .camera-error .btn{margin-top:8px;}
+  .camera.error video{display:none;}
+  .camera.error .camera-error{display:block;}
+  .camera .thumbs{margin:0; flex-wrap:nowrap; overflow-x:auto; min-height:52px; flex:none;}
+  .camera .thumb{width:52px; height:52px;}
+  .camera-actions{display:flex; align-items:center; justify-content:space-between; gap:10px;}
+  .camera-actions button.side{flex:1; background:#3d3346; color:#fff; border:none; border-radius:14px; padding:12px 6px; font-family:inherit; font-weight:800; font-size:12.5px; cursor:pointer;}
+  .shutter{width:68px; height:68px; flex:none; border-radius:50%; background:#fff; border:5px solid var(--purple); cursor:pointer;}
+  .shutter:disabled{opacity:.35; cursor:not-allowed;}
+  .photo-viewer{position:absolute; inset:0; z-index:160; background:rgba(20,15,25,.92); display:none; align-items:center; justify-content:center; padding:20px; cursor:pointer;}
+  .photo-viewer.open{display:flex;}
+  .photo-viewer img{max-width:100%; max-height:100%; border-radius:14px;}
 </style>
 </head>
 <body>
@@ -377,9 +418,10 @@
     <div class="screen">
       <div class="topbar">
         <span class="back-title" style="font-size:17px;">Panel de administrador</span>
-        <div class="icon-btn" onclick="adminLogout()" title="Cerrar sesión">
+        <button type="button" class="logout-btn" onclick="adminLogout()">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
-        </div>
+          Cerrar sesión
+        </button>
       </div>
       <p class="muted">Aquí ves, en tiempo real, lo que hacen los usuarios en la app (simulado con almacenamiento local).</p>
       <div id="admin-content"></div>
@@ -412,9 +454,10 @@
           <h2 id="home-greeting">Hola de nuevo 👋</h2>
           <p class="muted">¿Qué quieres hacer hoy con tu ropa?</p>
         </div>
-        <div class="icon-btn" onclick="installApp()" title="Instalar app en el celular">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-        </div>
+        <button type="button" class="logout-btn" onclick="userLogout()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+          Cerrar sesión
+        </button>
       </div>
 
       <div class="reco-strip" id="reco-strip" style="display:none;"></div>
@@ -587,6 +630,28 @@
     </div>
   </div>
 
+  <!-- ============ CÁMARA ============ -->
+  <div class="camera" id="camera">
+    <div class="camera-head"><span>Tomar foto</span><span id="camera-count"></span></div>
+    <div class="camera-view">
+      <video id="camera-video" autoplay playsinline muted></video>
+      <div class="camera-error">
+        <p id="camera-error-text"></p>
+        <button type="button" class="btn btn-primary" onclick="pickFile('file-camera')">📷 Abrir cámara del teléfono</button>
+        <button type="button" class="btn btn-soft" onclick="pickFile('file-gallery')">🖼️ Elegir de la galería</button>
+      </div>
+    </div>
+    <div class="thumbs" id="camera-thumbs"></div>
+    <div class="camera-actions">
+      <button type="button" class="side" onclick="switchCamera()">🔄 Girar</button>
+      <button type="button" class="shutter" id="camera-shutter" onclick="takePhoto()" aria-label="Capturar foto"></button>
+      <button type="button" class="side" onclick="closeCamera()">✔️ Listo</button>
+    </div>
+  </div>
+  <input type="file" id="file-camera" accept="image/*" capture="environment" hidden>
+  <input type="file" id="file-gallery" accept="image/*" multiple hidden>
+  <div class="photo-viewer" id="photo-viewer" onclick="closePhoto()"><img id="photo-viewer-img" alt="Foto ampliada"></div>
+
   <div class="toast" id="toast"></div>
 </div>
 
@@ -615,7 +680,7 @@ function dbLoad(){
   return null;
 }
 function dbSave(db){
-  try{ localStorage.setItem(DB_KEY, JSON.stringify(db)); }catch(e){}
+  try{ localStorage.setItem(DB_KEY, JSON.stringify(db)); return true; }catch(e){ return false; }
 }
 function dbSeed(){
   let db = dbLoad();
@@ -677,7 +742,7 @@ function logEvent(flow, label, opts){
   opts = opts || {};
   const db = dbSeed();
   const user = currentUser();
-  db.events.push({
+  const event = {
     id: 'e'+Date.now()+Math.random().toString(16).slice(2,6),
     userEmail: user ? user.email : 'invitado@swap.local',
     userName: user ? user.name : 'Invitado',
@@ -688,10 +753,30 @@ function logEvent(flow, label, opts){
     amount: opts.amount || 0,
     cost: opts.cost || 0,
     impact: opts.impact || '',
+    photos: (opts.photos || []).slice(),
     createdAt: Date.now()
-  });
-  dbSave(db);
+  };
+  db.events.push(event);
+  if(!dbSave(db) && event.photos.length){
+    event.photos = [];
+    dbSave(db);
+    showToast('Memoria llena: se guardó sin fotos');
+  }
   return db;
+}
+function esc(v){
+  return String(v).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function resetUserState(){
+  state.quizAnswers = {};
+  state.recommendation = null;
+  state.arreglaData = {};
+  state.transformaData = {};
+  quizIndex = 0;
+  document.getElementById('quiz-log').innerHTML = '';
+  document.getElementById('quiz-options-holder').innerHTML = '';
+  document.getElementById('reco-strip').style.display = 'none';
+  ['auth-name','auth-email','auth-password','admin-email','admin-password'].forEach(id=>document.getElementById(id).value='');
 }
 
 /* ============ AUTENTICACIÓN ============ */
@@ -732,6 +817,7 @@ function continueAsGuest(){
 }
 function userLogout(){
   sessionClear();
+  resetUserState();
   showToast('Sesión cerrada');
   goTo('login');
 }
@@ -746,6 +832,7 @@ function submitAdminLogin(){
 }
 function adminLogout(){
   sessionClear();
+  resetUserState();
   showToast('Sesión de administrador cerrada');
   goTo('login');
 }
@@ -799,13 +886,14 @@ function renderAdmin(){
         <span>${meta.icon}</span>
         <div class="etxt"><span class="em-flow">${meta.name}</span> · <span class="em-label">${e.label}${e.outcome?' — '+e.outcome:''}${e.impact?' — '+e.impact:''}${montoTxt}</span></div>
         <span class="pill ${e.status==='cerrado'?'cerrado':'abierto'}">${e.status==='cerrado'?'Cerrado':'En curso'}</span>
+        ${eventPhotos(e)}
       </div>`;
     }).join('') : `<div class="admin-empty">Sin actividad todavía.</div>`;
     return `
       <div class="user-row" id="user-row-${i}" onclick="toggleUserRow(${i})">
         <div class="user-row-top">
-          <div class="avatar" style="background:${['#a883c9','#e3849c','#87996a','#c9a28a'][i%4]};">${u.name.split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase()}</div>
-          <div class="utxt"><h4>${u.name}${u.guest?' <span class="muted" style="font-weight:700;">(invitado)</span>':''}</h4><p>${u.email} · ${events.length} actividad(es)</p></div>
+          <div class="avatar" style="background:${['#a883c9','#e3849c','#87996a','#c9a28a'][i%4]};">${esc(u.name.split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase())}</div>
+          <div class="utxt"><h4>${esc(u.name)}${u.guest?' <span class="muted" style="font-weight:700;">(invitado)</span>':''}</h4><p>${esc(u.email)} · ${events.length} actividad(es)</p></div>
           <span class="muted" style="font-size:11px;">▾</span>
         </div>
         <div class="user-events">${eventsHtml}</div>
@@ -817,7 +905,7 @@ function renderAdmin(){
     const meta = flowMeta[e.flow] || {icon:'📌', name:e.flow};
     return `<div class="event-row">
       <span>${meta.icon}</span>
-      <div class="etxt"><span class="em-flow">${e.userName}</span> · <span class="em-label">${meta.name}: ${e.label}</span></div>
+      <div class="etxt"><span class="em-flow">${esc(e.userName)}</span> · <span class="em-label">${meta.name}: ${e.label}</span></div>
       <span class="muted" style="font-size:10.5px;">${timeAgo(e.createdAt)}</span>
     </div>`;
   }).join('') || `<div class="admin-empty">Aún no hay actividad registrada.</div>`;
@@ -830,15 +918,16 @@ function renderAdmin(){
     const meta = flowMeta[e.flow] || {icon:'📌', name:e.flow};
     return `<div class="event-row">
       <span>${meta.icon}</span>
-      <div class="etxt"><span class="em-flow">${e.userName}</span> · <span class="em-label">${e.label}</span></div>
+      <div class="etxt"><span class="em-flow">${esc(e.userName)}</span> · <span class="em-label">${e.label}</span></div>
       ${e.amount ? `<span class="muted" style="font-size:11px;">${money(e.amount)}</span>` : ''}
       <span class="pill ${e.status==='cerrado'?'cerrado':'abierto'}">${e.status==='cerrado'?'Cerrado':'Pendiente'}</span>
+      ${eventPhotos(e)}
     </div>`;
   }).join('') : `<div class="admin-empty">Sin pedidos ni solicitudes todavía.</div>`;
 
   const messagesHtml = db.messages.length ? db.messages.slice().reverse().map(m=>`
     <div class="contact-row"><span style="font-size:16px;">✉️</span>
-      <div><p style="margin:0;font-weight:800;font-size:12.5px;">${m.name} — ${m.email}</p><p class="muted" style="margin:0;">${m.msg}</p></div>
+      <div><p style="margin:0;font-weight:800;font-size:12.5px;">${esc(m.name)} — ${esc(m.email)}</p><p class="muted" style="margin:0;">${esc(m.msg)}</p></div>
     </div>`).join('') : `<div class="admin-empty">Sin mensajes de contacto.</div>`;
 
   holder.innerHTML = `
@@ -869,26 +958,155 @@ function toggleUserRow(i){
   if(row) row.classList.toggle('open');
 }
 
-/* ============ INSTALAR COMO APP ============ */
-let deferredInstallPrompt = null;
-window.addEventListener('beforeinstallprompt', (e)=>{
-  e.preventDefault();
-  deferredInstallPrompt = e;
-});
-function installApp(){
-  if(deferredInstallPrompt){
-    deferredInstallPrompt.prompt();
-    deferredInstallPrompt.userChoice.finally(()=>{ deferredInstallPrompt = null; });
-    return;
-  }
-  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
-  showToast(isIOS
-    ? 'En iPhone: toca Compartir 🔗 y luego "Agregar a inicio"'
-    : 'Abre el menú ⋮ del navegador y elige "Instalar app" o "Agregar a pantalla de inicio"');
+/* ============ FOTOS Y CÁMARA ============ */
+const MAX_PHOTOS = 5;
+const PHOTO_SIZE = 640; // fotos reducidas para que quepan en localStorage
+const camera = {picker:null, stream:null, facing:'environment', request:0};
+let fileTarget = null;
+
+function thumbHtml(src){
+  return `<img class="thumb" src="${esc(src)}" alt="Foto de la prenda" onclick="event.stopPropagation(); viewPhoto(this.src)">`;
 }
+function eventPhotos(e){
+  if(!e.photos || !e.photos.length) return '';
+  return `<div class="event-photos"><div class="thumbs">${e.photos.map(thumbHtml).join('')}</div></div>`;
+}
+function viewPhoto(src){
+  document.getElementById('photo-viewer-img').src = src;
+  document.getElementById('photo-viewer').classList.add('open');
+}
+function closePhoto(){
+  document.getElementById('photo-viewer').classList.remove('open');
+}
+function mountPhotoPicker(host, list, onChange){
+  const picker = {
+    list,
+    add(src){
+      if(list.length >= MAX_PHOTOS) return false;
+      list.push(src);
+      render();
+      return true;
+    }
+  };
+  function render(){
+    host.innerHTML = `
+      <div class="upload-box" role="button" tabindex="0">
+        <div class="up-icon">📷</div>
+        <p style="margin:0;">${list.length ? 'Toca para tomar otra foto' : 'Toca para tomar una foto'}</p>
+        <p class="muted">${list.length} de ${MAX_PHOTOS} fotos</p>
+      </div>
+      <div class="thumbs">${list.map((src,i)=>`<div class="thumb-wrap">${thumbHtml(src)}<button type="button" class="thumb-remove" data-i="${i}" aria-label="Quitar foto">✕</button></div>`).join('')}</div>
+      <button type="button" class="btn btn-soft btn-gallery">🖼️ Elegir de la galería</button>
+    `;
+    host.querySelector('.upload-box').onclick = ()=>openCamera(picker);
+    host.querySelector('.btn-gallery').onclick = ()=>{ fileTarget = picker; pickFile('file-gallery'); };
+    host.querySelectorAll('.thumb-remove').forEach(b=>b.onclick = ()=>{ list.splice(Number(b.dataset.i),1); render(); });
+    if(onChange) onChange(list.length);
+  }
+  render();
+}
+function openCamera(picker){
+  if(picker.list.length >= MAX_PHOTOS){ showToast(`Máximo ${MAX_PHOTOS} fotos`); return; }
+  camera.picker = picker;
+  camera.facing = 'environment';
+  fileTarget = picker;
+  document.getElementById('camera').classList.add('open');
+  refreshCameraStrip();
+  startStream();
+}
+function refreshCameraStrip(){
+  const list = camera.picker.list;
+  document.getElementById('camera-count').textContent = `${list.length} de ${MAX_PHOTOS}`;
+  document.getElementById('camera-thumbs').innerHTML = list.map(thumbHtml).join('');
+}
+function stopStream(){
+  if(camera.stream) camera.stream.getTracks().forEach(t=>t.stop());
+  camera.stream = null;
+  document.getElementById('camera-video').srcObject = null;
+}
+async function startStream(){
+  stopStream();
+  const request = ++camera.request;
+  const box = document.getElementById('camera');
+  const video = document.getElementById('camera-video');
+  const shutter = document.getElementById('camera-shutter');
+  box.classList.remove('error');
+  shutter.disabled = true;
+  try{
+    if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) throw new Error('sin soporte');
+    const stream = await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:camera.facing}}, audio:false});
+    // si cerraron la cámara mientras se pedía permiso, se apaga de inmediato
+    if(request !== camera.request){ stream.getTracks().forEach(t=>t.stop()); return; }
+    camera.stream = stream;
+    video.srcObject = stream;
+    await video.play();
+    shutter.disabled = false;
+  }catch(err){
+    if(request !== camera.request) return;
+    box.classList.add('error');
+    document.getElementById('camera-error-text').textContent = err.name === 'NotAllowedError'
+      ? 'No diste permiso para usar la cámara. Actívalo en los permisos del navegador o usa una de estas opciones.'
+      : 'No se pudo activar la cámara en vivo en este dispositivo. Usa una de estas opciones.';
+  }
+}
+function switchCamera(){
+  camera.facing = camera.facing === 'environment' ? 'user' : 'environment';
+  startStream();
+}
+function shrinkImage(source, width, height){
+  const scale = Math.min(1, PHOTO_SIZE / Math.max(width, height));
+  const canvas = document.createElement('canvas');
+  canvas.width = Math.round(width*scale);
+  canvas.height = Math.round(height*scale);
+  canvas.getContext('2d').drawImage(source, 0, 0, canvas.width, canvas.height);
+  return canvas.toDataURL('image/jpeg', 0.7);
+}
+function takePhoto(){
+  const video = document.getElementById('camera-video');
+  if(!camera.picker || !video.videoWidth) return;
+  camera.picker.add(shrinkImage(video, video.videoWidth, video.videoHeight));
+  refreshCameraStrip();
+  showToast('Foto tomada 📸');
+  if(camera.picker.list.length >= MAX_PHOTOS) closeCamera();
+}
+function closeCamera(){
+  camera.request++;
+  stopStream();
+  document.getElementById('camera').classList.remove('open');
+}
+function pickFile(inputId){
+  const input = document.getElementById(inputId);
+  input.value = '';
+  input.click();
+}
+function fileToPhoto(file){
+  return new Promise((resolve, reject)=>{
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = ()=>{ resolve(shrinkImage(img, img.naturalWidth, img.naturalHeight)); URL.revokeObjectURL(url); };
+    img.onerror = ()=>{ URL.revokeObjectURL(url); reject(new Error('imagen no válida')); };
+    img.src = url;
+  });
+}
+async function filesChosen(event){
+  const target = fileTarget;
+  const files = Array.from(event.target.files || []);
+  if(!target || !files.length) return;
+  closeCamera();
+  for(const file of files){
+    try{
+      if(!target.add(await fileToPhoto(file))){ showToast(`Máximo ${MAX_PHOTOS} fotos`); break; }
+    }catch(e){ showToast('No se pudo leer esa imagen'); }
+  }
+}
+['file-camera','file-gallery'].forEach(id=>document.getElementById(id).addEventListener('change', filesChosen));
+document.addEventListener('visibilitychange', ()=>{ if(document.hidden) closeCamera(); });
 
 /* ============ NAVEGACIÓN ============ */
 function goTo(view){
+  closeCamera();
+  closePhoto();
+  if(view==='dona') renderDona();
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
   document.getElementById('view-'+view).classList.add('active');
   document.querySelectorAll('.navitem').forEach(n=>n.classList.remove('active'));
@@ -1045,41 +1263,69 @@ function goHomeFromQuiz(){
 const donationPoints = [
   {name:'Sede SWAP!', addr:'Cra 43A #10-25, Medellín'}
 ];
-function renderDona(){
-  const p = donationPoints[0];
+function renderDona(initialPhotos){
+  state.donaData = {photos:(initialPhotos || []).slice(), point:null};
   document.getElementById('dona-steps').innerHTML = `
-    <p>Dona a fundaciones o a personas que lo necesitan. Sube una foto y confirma tu donación.</p>
-    <div class="upload-box" onclick="showToast('Foto simulada añadida 📷')">
-      <div class="up-icon">📷</div>
-      <p style="margin:0;">Toca para subir una foto de la prenda</p>
-    </div>
+    <p>Dona a fundaciones o a personas que lo necesitan. Toma las fotos, elige el punto de acopio y confirma tu donación.</p>
+    <div id="dona-photos"></div>
     <h3 style="font-size:14.5px;">Punto de acopio</h3>
-    <div class="choice-card" onclick="confirmDonation(0)">
-      <span class="emoji">📍</span>
-      <div><h4>${p.name}</h4><p class="muted">${p.addr}</p></div>
-    </div>
-    <button class="btn btn-primary" onclick="confirmDonation(0)">Confirmar donación</button>
+    ${donationPoints.map((p,i)=>`
+      <div class="choice-card dona-point" onclick="selectPoint(${i})">
+        <span class="emoji">📍</span>
+        <div><h4>${p.name}</h4><p class="muted">${p.addr}</p></div>
+      </div>`).join('')}
+    <button class="btn btn-primary" onclick="confirmDonation()">Confirmar donación</button>
+    ${donationHistoryHtml()}
   `;
+  mountPhotoPicker(document.getElementById('dona-photos'), state.donaData.photos);
 }
-function confirmDonation(i){
-  const p = donationPoints[i];
-  logEvent('dona', 'Donación confirmada', {status:'cerrado', outcome:p.name, impact:'Prenda con vida útil restante'});
+function selectPoint(i){
+  state.donaData.point = i;
+  document.querySelectorAll('.dona-point').forEach((c,n)=>c.classList.toggle('sel', n===i));
+}
+function donationHistoryHtml(){
+  const user = currentUser();
+  const email = user ? user.email : 'invitado@swap.local';
+  const donations = dbSeed().events.filter(e=>e.flow==='dona' && e.userEmail===email).sort((a,b)=>b.createdAt-a.createdAt);
+  const items = donations.map(e=>`
+    <div class="card history-card">
+      <h4>💗 ${esc(e.outcome)}</h4>
+      <p class="muted" style="margin:0;">${new Date(e.createdAt).toLocaleString('es-CO', {dateStyle:'medium', timeStyle:'short'})}</p>
+      ${e.photos && e.photos.length ? `<div class="thumbs">${e.photos.map(thumbHtml).join('')}</div>` : '<p class="muted" style="margin:6px 0 0;">Sin fotos</p>'}
+    </div>`).join('');
+  return `<div class="admin-section-title" style="margin-top:22px;">Historial de donaciones (${donations.length})</div>
+    ${items || '<div class="admin-empty">Todavía no tienes donaciones.</div>'}`;
+}
+function confirmDonation(){
+  const d = state.donaData;
+  if(!d.photos.length){ showToast('Toma al menos una foto 📷'); return; }
+  if(d.point === null){ showToast('Elige un punto de acopio 📍'); return; }
+  const p = donationPoints[d.point];
+  logEvent('dona', 'Donación confirmada', {status:'cerrado', outcome:p.name, impact:'Prenda con vida útil restante', photos:d.photos});
   document.getElementById('dona-steps').innerHTML = `
     <div class="result-box">
       <div class="big-emoji">💚</div>
       <h3>¡Gracias por donar!</h3>
       <p>Lleva tu prenda a <b>${p.name}</b><br><span class="muted">${p.addr}</span></p>
-      <button class="btn btn-primary" onclick="goTo('home')">Volver al inicio</button>
+      <button class="btn btn-primary" style="margin-bottom:10px;" onclick="goTo('dona')">Donar otra prenda</button>
+      <button class="btn btn-outline" onclick="goTo('home')">Volver al inicio</button>
     </div>
+    ${donationHistoryHtml()}
   `;
+  document.querySelector('#view-dona .screen').scrollTop = 0;
 }
 
 /* ============ ARREGLA (según diagrama de flujo) ============ */
 function startArregla(){
   goTo('arregla');
-  state.arreglaData = {};
-  logEvent('arregla', 'Inicio: subió foto del daño', {status:'abierto'});
+  state.arreglaData = {photos:[]};
   arreglaStep('foto');
+}
+function continuarArregla(){
+  const photos = state.arreglaData.photos;
+  if(!photos.length) return;
+  logEvent('arregla', 'Inicio: subió foto del daño', {status:'abierto', photos});
+  arreglaStep('tipo');
 }
 function setArreglaDots(n,total){
   document.getElementById('arregla-dots').innerHTML =
@@ -1092,13 +1338,12 @@ function arreglaStep(step, payload){
   if(step==='foto'){
     setArreglaDots(1,6);
     el.innerHTML = `
-      <p>Sube una foto del daño de tu prenda para empezar.</p>
-      <div class="upload-box" onclick="arreglaStep('tipo')">
-        <div class="up-icon">📷</div>
-        <p style="margin:0;">Toca para subir la foto del daño</p>
-      </div>
-      <button class="btn btn-outline" onclick="arreglaStep('tipo')">Continuar</button>
+      <p>Toma una foto del daño de tu prenda para empezar.</p>
+      <div id="arregla-photos"></div>
+      <button class="btn btn-primary" id="arregla-next" onclick="continuarArregla()">Continuar</button>
     `;
+    mountPhotoPicker(document.getElementById('arregla-photos'), d.photos,
+      n=>{ document.getElementById('arregla-next').disabled = n===0; });
   }
 
   else if(step==='tipo'){
@@ -1200,7 +1445,7 @@ function arreglaStep(step, payload){
         <p>No te preocupes, todavía tiene solución. ¿Qué prefieres hacer con esta prenda?</p>
         <div class="btn-row" style="margin-bottom:10px;">
           <button class="btn btn-pink" onclick="startTransforma(true)">Transformarla</button>
-          <button class="btn btn-outline" onclick="goTo('dona')">Donarla</button>
+          <button class="btn btn-outline" onclick="goTo('dona'); renderDona(state.arreglaData.photos)">Donarla</button>
         </div>
       </div>
     `;
@@ -1220,9 +1465,15 @@ const proposalVariants = [
 ];
 function startTransforma(fromArreglo){
   goTo('transforma');
-  state.transformaData = {};
-  logEvent('transforma', 'Inicio: subió foto de la prenda', {status:'abierto'});
+  state.transformaData = {photos: fromArreglo ? (state.arreglaData.photos || []).slice() : []};
+  if(fromArreglo) logEvent('transforma', 'Inicio: continúa desde Arregla', {status:'abierto'});
   transformaStep(fromArreglo ? 'tipo' : 'foto');
+}
+function continuarTransforma(){
+  const photos = state.transformaData.photos;
+  if(!photos.length) return;
+  logEvent('transforma', 'Inicio: subió foto de la prenda', {status:'abierto', photos});
+  transformaStep('tipo');
 }
 function setTransformaDots(n,total){
   document.getElementById('transforma-dots').innerHTML =
@@ -1235,13 +1486,12 @@ function transformaStep(step, payload){
   if(step==='foto'){
     setTransformaDots(1,9);
     el.innerHTML = `
-      <p>Sube una foto de la ropa que no te gusta y te ayudamos a crear una nueva.</p>
-      <div class="upload-box" onclick="transformaStep('tipo')">
-        <div class="up-icon">📷</div>
-        <p style="margin:0;">Toca para subir la foto de tu prenda</p>
-      </div>
-      <button class="btn btn-outline" onclick="transformaStep('tipo')">Continuar</button>
+      <p>Toma una foto de la ropa que no te gusta y te ayudamos a crear una nueva.</p>
+      <div id="transforma-photos"></div>
+      <button class="btn btn-primary" id="transforma-next" onclick="continuarTransforma()">Continuar</button>
     `;
+    mountPhotoPicker(document.getElementById('transforma-photos'), d.photos,
+      n=>{ document.getElementById('transforma-next').disabled = n===0; });
   }
 
   else if(step==='tipo'){
